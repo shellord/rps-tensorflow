@@ -1,13 +1,12 @@
 import { useState, useRef, useEffect } from 'react'
-import './App.css'
 import Webcam from 'react-webcam'
 import * as tf from '@tensorflow/tfjs'
 import * as handpose from '@tensorflow-models/handpose'
-import { drawHand } from './utils/drawHand'
+import { drawHand } from '../utils/drawHand'
 import * as fp from 'fingerpose'
-import { paperGesture, rockGesture, scissorGesture } from './gestures'
+import { paperGesture, rockGesture, scissorGesture } from '../gestures'
 
-function App() {
+const GestureDetector = () => {
   const webcamRef = useRef(null)
   const canvasRef = useRef(null)
   const [gesture, setGesture] = useState(null)
@@ -52,7 +51,7 @@ function App() {
   }
 
   return (
-    <div className="App">
+    <div>
       <Webcam
         ref={webcamRef}
         onUserMedia={runHandpose}
@@ -70,4 +69,4 @@ function App() {
   )
 }
 
-export default App
+export default GestureDetector
