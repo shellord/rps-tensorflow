@@ -6,17 +6,18 @@ import { drawHand } from '../utils/drawHand'
 import * as fp from 'fingerpose'
 import { paperGesture, rockGesture, scissorGesture } from '../gestures'
 
-const GestureDetector = () => {
+const GestureDetector = ({ enabled, onGesture }) => {
   const webcamRef = useRef(null)
   const canvasRef = useRef(null)
   const [gesture, setGesture] = useState(null)
 
   useEffect(() => {
-    console.log(gesture)
-  }, [gesture])
+    console.log(enabled)
+    enabled && onGesture(gesture)
+  }, [gesture, enabled, onGesture])
 
   const GE = new fp.GestureEstimator([
-    fp.Gestures.ThumbsUpGesture,
+    // fp.Gestures.ThumbsUpGesture,
     paperGesture,
     rockGesture,
     scissorGesture,
@@ -32,22 +33,24 @@ const GestureDetector = () => {
   }
 
   const detectGesture = async (model) => {
-    const video = webcamRef.current.video
-    const hand = await model.estimateHands(video)
-    if (hand.length > 0) {
-      const estimatedGestures = await GE.estimate(hand[0].landmarks, 7.5)
-      const maxConfidence = estimatedGestures.gestures.reduce(
-        (prev, current) =>
-          prev.confidence > current.confidence ? prev : current,
-        { confidence: 0 }
-      )
-      setGesture(maxConfidence)
-    }
+    if (webcamRef.current.video !== null) {
+      const video = webcamRef.current.video
+      const hand = await model.estimateHands(video)
+      if (hand.length > 0) {
+        const estimatedGestures = await GE.estimate(hand[0].landmarks, 7.5)
+        const maxConfidence = estimatedGestures.gestures.reduce(
+          (prev, current) =>
+            prev.confidence > current.confidence ? prev : current,
+          { confidence: 0 }
+        )
+        setGesture(maxConfidence)
+      }
 
-    canvasRef.current.width = webcamRef.current.video.videoWidth
-    canvasRef.current.height = webcamRef.current.video.videoHeight
-    const ctx = canvasRef.current.getContext('2d')
-    drawHand(hand, ctx)
+      canvasRef.current.width = webcamRef.current.video.videoWidth
+      canvasRef.current.height = webcamRef.current.video.videoHeight
+      const ctx = canvasRef.current.getContext('2d')
+      drawHand(hand, ctx)
+    }
   }
 
   return (
