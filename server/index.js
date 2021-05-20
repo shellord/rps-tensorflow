@@ -11,9 +11,13 @@ const io = new Server(httpServer, {
 
 io.on('connection', (socket) => {
   console.log(socket.id + ' has connected')
-  socket.emit('msg', 'welcome ' + socket.id)
+
   socket.on('disconnect', () => {
     console.log(socket.id + ' has disconnected')
+  })
+
+  socket.on('createRoom', () => {
+    socket.emit('roomdId', 1234)
   })
 })
 
