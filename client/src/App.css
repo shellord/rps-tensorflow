@@ -1,7 +1,11 @@
 *{
-  margin:0px;
+  margin:10px;
 }
 
 body{
-  background-color: black;
+  background-color: burlywood;
+}
+
+button{
+  margin: 10px;
 }
